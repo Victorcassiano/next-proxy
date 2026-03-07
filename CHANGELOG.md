@@ -30,15 +30,3 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - Added: `jose` (JWT validation)
 - Moved: `dotenv` to peerDependencies
-
----
-
-## Formato Recomendado
-
-| Tipo | Descrição |
-|------|-----------|
-| **Added** | Novas funcionalidades |
-| **Changed** | Alterações em funcionalidades existentes |
-| **Fixed** | Correções de bugs |
-| **Removed** | Funcionalidades removidas |
-| **Dependencies** | Mudanças em dependências |
