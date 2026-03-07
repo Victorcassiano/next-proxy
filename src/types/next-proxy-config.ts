@@ -1,5 +1,5 @@
-import type { RoleConfig } from "./role-config";
-import type { RouteRule } from "./route-rule";
+import type { RoleConfig } from "./role-config.js";
+import type { RouteRule } from "./route-rule.js";
 
 export type NextProxyConfig = {
   routes: Record<string, RouteRule>;
