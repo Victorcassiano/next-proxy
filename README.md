@@ -130,7 +130,7 @@ The variable name must match the one configured in `auth.cookie.secret`.
 ## Full Example
 
 ```typescript
-import { defineNextProxyConfig } from "next-proxy";
+import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 
 export default defineNextProxyConfig({
   auth: {
@@ -295,7 +295,7 @@ O nome da variável deve corresponder ao configurado em `auth.cookie.secret`.
 ## Exemplo Completo
 
 ```typescript
-import { defineNextProxyConfig } from "next-proxy";
+import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 
 export default defineNextProxyConfig({
   auth: {

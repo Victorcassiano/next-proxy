@@ -1,5 +1,5 @@
 export const middlewareTemplate = `
-import { createNextProxy } from "next-proxy";
+import { createNextProxy } from "@victorcassiano/next-proxy";
 
 export const middleware = createNextProxy();
 

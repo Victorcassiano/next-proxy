@@ -16,7 +16,7 @@ export function generateFileContent(config: NextProxyConfig, fileName: string): 
 import "dotenv/config";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { validateAuthToken, type RouteMatcher } from "next-proxy";
+import { validateAuthToken, type RouteMatcher } from "@victorcassiano/next-proxy";
 
 export async function ${functionName}(request: NextRequest) {
   const { pathname } = request.nextUrl;
