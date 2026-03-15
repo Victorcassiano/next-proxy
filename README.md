@@ -22,16 +22,16 @@ next-proxy solves these problems by generating optimized middleware code based o
 
 ```bash
 # npm
-npm install next-proxy
+npm install @victorcassiano/next-proxy
 
 # yarn
-yarn add next-proxy
+yarn add @victorcassiano/next-proxy
 
 # pnpm
-pnpm add next-proxy
+pnpm add @victorcassiano/next-proxy
 
 # bun
-bun add next-proxy
+bun add @victorcassiano/next-proxy
 ```
 
 ## Quick Start
@@ -130,7 +130,7 @@ The variable name must match the one configured in `auth.cookie.secret`.
 ## Full Example
 
 ```typescript
-import { defineNextProxyConfig } from "next-proxy";
+import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 
 export default defineNextProxyConfig({
   auth: {
@@ -187,16 +187,16 @@ next-proxy resolve esses problemas gerando código de middleware otimizado basea
 
 ```bash
 # npm
-npm install next-proxy
+npm install @victorcassiano/next-proxy
 
 # yarn
-yarn add next-proxy
+yarn add @victorcassiano/next-proxy
 
 # pnpm
-pnpm add next-proxy
+pnpm add @victorcassiano/next-proxy
 
 # bun
-bun add next-proxy
+bun add @victorcassiano/next-proxy
 ```
 
 ## Quick Start
@@ -295,7 +295,7 @@ O nome da variável deve corresponder ao configurado em `auth.cookie.secret`.
 ## Exemplo Completo
 
 ```typescript
-import { defineNextProxyConfig } from "next-proxy";
+import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 
 export default defineNextProxyConfig({
   auth: {
