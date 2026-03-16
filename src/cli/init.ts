@@ -1,8 +1,8 @@
 import { writeFileSync, existsSync } from "fs";
 import { join } from "path";
-import { configTemplate } from "template/config";
-import { detectBasePath } from "utils/detect-base-path";
-import { detectNextVersion } from "utils/detect-next-version";
+import { configTemplate } from "../template/config.js";
+import { detectBasePath } from "../utils/detect-base-path.js";
+import { detectNextVersion } from "../utils/detect-next-version.js";
 
 export async function init() {
   const version = detectNextVersion();

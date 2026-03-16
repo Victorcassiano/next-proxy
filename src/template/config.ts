@@ -1,5 +1,5 @@
 export const configTemplate = `
-import { defineNextProxyConfig } from "next-proxy";
+import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 
 export default defineNextProxyConfig({
   auth: {
