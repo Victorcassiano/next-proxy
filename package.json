@@ -1,6 +1,6 @@
 {
   "name": "@victorcassiano/next-proxy",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "keywords": ["next", "nextjs", "proxy", "jwt", "auth", "rbac", "middleware", "next-proxy"],
   "author": {
     "name": "Victor Cassiano",

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] - 2025-03-15
+
+### Added
+- `--force` flag to overwrite generated files
+
+### Changed
+- Package name: `@victorcassiano/next-proxy`
+- Build system: switched from tsdown to tsc
+
+### Fixed
+- Config validation (routes, auth, redirects)
+- Improved error messages
+
 ## [0.0.5] - 2025-03-02
 
 ### Added
