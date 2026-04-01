@@ -4,26 +4,16 @@ import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 export default defineNextProxyConfig({
   auth: {
     strategy: "cookie",
-    cookie: {
-      name: "auth_token",
-      secret: "VARIABLE_ENV",
-    },
+    key: "auth_token",
   },
   routes: {
     "/": "public",
     "/dashboard": "private",
-    "/login": "publicOnly",
+    "/login": "public",
   },
   redirects: {
     unauthenticated: "/login",
-    authenticated: "/dashboard",
-    unauthorized: "/dashboard",
   },
   fallback: "/",
-  roles: 
-    [
-      {name: "admin", navigations: ["/admin", "/dashboard"]}, 
-      {name: "user", navigations: ["/dashboard"]}
-    ]
 });
 `;
