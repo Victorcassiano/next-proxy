@@ -1,5 +1,6 @@
 import { existsSync, writeFileSync, mkdirSync } from "fs";
-import { dirname, join, relative } from "path";
+import { dirname, join, relative, resolve } from "path";
+import { pathToFileURL } from "url";
 import { detectNextVersion } from "../utils/detect-next-version.js";
 import { detectBasePath } from "../utils/detect-base-path.js";
 import { generateFileContent } from "../utils/generate-file-content.js";
@@ -7,7 +8,7 @@ import type { NextProxyConfig } from "../types/next-proxy-config.js";
 
 export async function build(options: { force?: boolean } = {}) {
   const root = process.cwd();
-  const configPath = join(root, "proxy.config.ts");
+  const configPath = resolve(root, "proxy.config.ts");
   const { force = false } = options;
 
   try {
@@ -15,7 +16,8 @@ export async function build(options: { force?: boolean } = {}) {
       throw new Error("proxy.config.ts not found.");
     }
 
-    const { default: config } = await import(configPath);
+    const configUrl = pathToFileURL(configPath).href;
+    const { default: config } = await import(configUrl);
 
     if (!config || !config.routes) {
       throw new Error("Invalid proxy.config.ts: missing 'routes' property.");
