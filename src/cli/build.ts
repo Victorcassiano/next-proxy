@@ -21,8 +21,12 @@ export async function build(options: { force?: boolean } = {}) {
       throw new Error("Invalid proxy.config.ts: missing 'routes' property.");
     }
 
-    if (!config.auth || !config.auth.cookie) {
-      throw new Error("Invalid proxy.config.ts: missing 'auth.cookie' property.");
+    if (!config.auth) {
+      throw new Error("Invalid proxy.config.ts: missing 'auth' property.");
+    }
+
+    if (!config.auth.key) {
+      throw new Error("Invalid proxy.config.ts: missing 'auth.key' property.");
     }
 
     if (!config.redirects) {
