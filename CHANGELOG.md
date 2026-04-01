@@ -4,19 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## [0.0.7] - 2025-03-15
 
-### Changed
-- Simplified to route redirection only
-- Removed JWT authentication and token validation
-- Removed environment variable dependencies
-- Removed roles and cookie management
-- New route types: `public`, `private`, `hybrid`
+### Added
+- **Unit Tests**: 25 tests covering core utilities
+  - `path-to-regex` - Route to regex conversion
+  - `normalize-routes` - Route normalization
+  - `generate-route-logic` - Route logic generation
+  - `generate-file-content` - File content generation
+- **Type Tests**: 17 tests using tsd for type safety
+  - Config validation types
+  - Exported type definitions
+- **Integration Tests**: 14 tests for CLI commands
+  - `init` command tests
+  - `build` command Tests
+  - `--force` flag Tests
+- Test scripts: `test`, `test:types`, `test:integration`, `test:all`
 
-### Removed
-- `jose` dependency (JWT validation)
-- `dotenv` dependency
-- `auth` configuration
-- `roles` configuration
-- `validateAuthToken` export
+### Changed
+- Simplified to cookie-based route redirection
+- Removed JWT validation and token authentication
+- Simplified route types to: public, private
+- Build system: switched from tsdown to tsc
+
+### Fixed
+- Config validation (routes, auth, redirects)
+- Windows ESM import compatibility with pathToFileURL
 
 ## [0.0.6] - 2025-03-15
 
