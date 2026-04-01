@@ -1,21 +1,17 @@
-import type { RoleConfig } from "./role-config.js";
 import type { RouteRule } from "./route-rule.js";
+
+export type AuthConfig = {
+  strategy: "cookie";
+  key: string;
+};
 
 export type NextProxyConfig = {
   routes: Record<string, RouteRule>;
   redirects: {
     unauthenticated: string;
-    unauthorized: string;
     authenticated: string;
   };
-  auth: {
-    strategy: "cookie" | "jwt";
-    cookie: {
-      name: string;
-      secret: string;
-    };
-  };
-  roles?: RoleConfig[];
+  auth: AuthConfig;
   output?: {
     basePath?: string;
   };
