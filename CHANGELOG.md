@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.8] - 2026-04-13
+
+### Added
+- **`public-only` access type**: New route type for pages that should only be accessible to unauthenticated users (e.g., `/login`). Redirects to `redirects.authenticated` if user is already logged in
+- **`redirects.authenticated`**: New redirect configuration for authenticated users (e.g., redirect from `/login` when user is already logged in)
+
+### Changed
+- Expanded route types from `public | private` to `public | public-only | private`
+- Updated generated middleware to handle all three access types
+
 ## [0.0.7] - 2025-03-15
 
 ### Added
