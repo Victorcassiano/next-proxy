@@ -22,6 +22,11 @@ export function generateRouteLogic(
 
   for (const route of routeMatchers) {
     if (route.regex.test(pathname)) {
+      if (route.access === "public-only" && isAuthenticated) {
+        return NextResponse.redirect(
+          new URL("${redirects.authenticated}", request.url)
+        );
+      }
       if (route.access === "private" && !isAuthenticated) {
         return NextResponse.redirect(
           new URL("${redirects.unauthenticated}", request.url)

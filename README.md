@@ -65,12 +65,12 @@ Define access rules for your routes:
 ```typescript
 routes: {
   "/": "public",           // Accessible to everyone
+  "/login": "public-only", // Only for unauthenticated users
   "/dashboard": "private", // Redirects to unauthenticated URL if no cookie
-  "/login": "public",      // Accessible to everyone
 }
-```
 
 - `"public"` - Accessible to everyone, no authentication required
+- `"public-only"` - Only for unauthenticated users. Redirects to `redirects.authenticated` if authenticated
 - `"private"` - Redirects to `redirects.unauthenticated` if cookie is not present
 
 ### redirects (required)
@@ -78,7 +78,8 @@ routes: {
 Define redirect behavior:
 ```typescript
 redirects: {
-  unauthenticated: "/login",  // Where to redirect users without auth cookie
+  unauthenticated: "/login",  // Where to redirect unauthenticated users
+  authenticated: "/dashboard", // Where to redirect authenticated users (e.g., from /login)
 }
 ```
 
@@ -110,7 +111,7 @@ export default defineNextProxyConfig({
   },
   routes: {
     "/": "public",
-    "/login": "public",
+    "/login": "public-only",
     "/register": "public",
     "/dashboard": "private",
     "/admin": "private",
@@ -118,6 +119,7 @@ export default defineNextProxyConfig({
   },
   redirects: {
     unauthenticated: "/login",
+    authenticated: "/dashboard",
   },
   fallback: "/",
 });
@@ -192,12 +194,13 @@ Defina regras de acesso para suas rotas:
 ```typescript
 routes: {
   "/": "public",           // Acessível para todos
+  "/login": "public-only", // Apenas para não autenticados
   "/dashboard": "private", // Redireciona para URL de não autenticado se não houver cookie
-  "/login": "public",      // Acessível para todos
 }
 ```
 
 - `"public"` - Acessível para todos, sem necessidade de autenticação
+- `"public-only"` - Apenas para não autenticados. Redireciona para `redirects.authenticated` se autenticado
 - `"private"` - Redireciona para `redirects.unauthenticated` se o cookie não estiver presente
 
 ### redirects (obrigatório)
@@ -206,6 +209,7 @@ Defina o comportamento de redirecionamento:
 ```typescript
 redirects: {
   unauthenticated: "/login",  // Para onde redirecionar usuários sem cookie de auth
+  authenticated: "/dashboard", // Para onde redirecionar usuários autenticados (ex: desde /login)
 }
 ```
 
@@ -237,7 +241,7 @@ export default defineNextProxyConfig({
   },
   routes: {
     "/": "public",
-    "/login": "public",
+    "/login": "public-only",
     "/register": "public",
     "/dashboard": "private",
     "/admin": "private",
@@ -245,6 +249,7 @@ export default defineNextProxyConfig({
   },
   redirects: {
     unauthenticated: "/login",
+    authenticated: "/dashboard",
   },
   fallback: "/",
 });
