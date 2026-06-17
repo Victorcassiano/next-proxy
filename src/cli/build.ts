@@ -3,6 +3,7 @@ import { dirname, join, relative, resolve } from "path";
 import { pathToFileURL } from "url";
 import { detectNextVersion } from "../utils/detect-next-version.js";
 import { detectBasePath } from "../utils/detect-base-path.js";
+import { detectShadowedRoutes } from "../utils/detect-shadowed-routes.js";
 import { generateFileContent } from "../utils/generate-file-content.js";
 import type { NextProxyConfig } from "../types/next-proxy-config.js";
 
@@ -35,6 +36,13 @@ export async function build(options: { force?: boolean } = {}) {
       throw new Error("Invalid proxy.config.ts: missing 'redirects' property.");
     }
 
+    const shadowed = detectShadowedRoutes(config.routes);
+    if (shadowed.length > 0) {
+      throw new Error(
+        "Shadowed routes detected:\n  " + shadowed.join("\n  ")
+      );
+    }
+
     const nextVersion = detectNextVersion() || 15;
     const basePath = config.output?.basePath || detectBasePath();
 
@@ -62,5 +70,6 @@ export async function build(options: { force?: boolean } = {}) {
     console.log(`🧠 Next ${nextVersion} detected!`);
   } catch (error) {
     console.error(`❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`);
+    process.exit(1);
   }
 }

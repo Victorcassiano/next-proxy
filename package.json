@@ -1,6 +1,6 @@
 {
   "name": "@victorcassiano/next-proxy",
-  "version": "0.0.8",
+  "version": "1.0.0",
   "keywords": [
     "next",
     "nextjs",
@@ -43,7 +43,8 @@
     "test:watch": "vitest",
     "test:types": "tsd",
     "test:integration": "vitest run tests/integration",
-    "test:all": "npm run test && npm run test:types && npm run test:integration"
+    "test:e2e": "vitest run tests/e2e",
+    "test:all": "npm run test && npm run test:types && npm run test:integration && npm run test:e2e"
   },
   "devDependencies": {
     "@types/node": "^25.3.3",

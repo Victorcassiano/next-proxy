@@ -36,7 +36,7 @@ expectError(
 expectAssignable<NextProxyConfig>({
   auth: { strategy: 'cookie', key: 'token' },
   routes: { '/': 'public' },
-  redirects: { unauthenticated: '/login' },
+  redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
 })
 
 // ✅ AuthConfig is correctly typed
@@ -50,7 +50,7 @@ expectType<NextProxyConfig>(
   defineNextProxyConfig({
     auth: { strategy: 'cookie', key: 'token' },
     routes: { '/': 'public' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2026-06-17
+
+### Added
+- **Optional catch-all routes**: Support for `[[...slug]]` syntax in route definitions
+- **Shadowed route detection**: Build now fails when static routes are shadowed by dynamic routes (e.g., `/users/admin` shadowed by `/users/[id]`)
+- **Custom matcher configuration**: `output.matcher` option to customize the middleware matcher patterns
+- **`next-proxy validate` command**: Validate `proxy.config.ts` without generating the middleware file
+- **`redirects.authenticated`**: Required redirect for authenticated users (e.g., redirect from `/login` when user is already logged in)
+- **`public-only` access type**: Route type for pages that should only be accessible to unauthenticated users
+- **Next.js 14 support**: E2E tests now cover Next.js 14, 15, and 16+
+- **CI/CD pipeline**: GitHub Actions workflow running tests across Node.js 18, 20, and 22
+- **Improved `detectBasePath`**: Now detects `app/` or `pages/` directories instead of just checking for `src/` folder
+
+### Fixed
+- **Build exit code**: `build` command now properly exits with code 1 on errors (important for CI/CD)
+- **Config template**: `proxy.config.ts` template now includes `redirects.authenticated`
+- **Type tests**: All type tests now use complete `redirects` object
+
+### Changed
+- **`redirects.authenticated` is now required**: Config without this field will fail validation
+- **Version bump**: `0.0.8` → `1.0.0`
+
 ## [0.0.8] - 2026-04-13
 
 ### Added
