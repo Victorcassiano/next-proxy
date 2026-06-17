@@ -2,9 +2,21 @@ import { existsSync } from "fs";
 import { join } from "path";
 
 export function detectBasePath(): string {
-  const srcPath = join(process.cwd(), "src");
+  const root = process.cwd();
 
-  if (existsSync(srcPath)) {
+  const hasRootRouter =
+    existsSync(join(root, "app")) ||
+    existsSync(join(root, "pages"));
+
+  if (hasRootRouter) {
+    return ".";
+  }
+
+  const hasSrcRouter =
+    existsSync(join(root, "src", "app")) ||
+    existsSync(join(root, "src", "pages"));
+
+  if (hasSrcRouter) {
     return "src";
   }
 

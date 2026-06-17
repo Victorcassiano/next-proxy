@@ -6,7 +6,7 @@ expectType<NextProxyConfig>(
   defineNextProxyConfig({
     auth: { strategy: 'cookie', key: 'auth_token' },
     routes: { '/': 'public' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 
@@ -19,7 +19,7 @@ expectType<NextProxyConfig>(
       '/dashboard': 'private',
       '/login': 'public',
     },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
     fallback: '/',
     output: { basePath: 'src' },
   })
@@ -35,7 +35,7 @@ expectType<AuthConfig>({
 expectError(
   defineNextProxyConfig({
     routes: { '/': 'public' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 
@@ -43,7 +43,7 @@ expectError(
 expectError(
   defineNextProxyConfig({
     auth: { strategy: 'cookie', key: 'token' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 
@@ -60,7 +60,7 @@ expectError(
   defineNextProxyConfig({
     auth: { strategy: 'cookie' },
     routes: { '/': 'public' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 
@@ -69,7 +69,7 @@ expectError(
   defineNextProxyConfig({
     auth: { strategy: 'jwt', key: 'token' },
     routes: { '/': 'public' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 
@@ -78,7 +78,7 @@ expectError(
   defineNextProxyConfig({
     auth: { strategy: 'cookie', key: 'token' },
     routes: { '/': 'invalid' },
-    redirects: { unauthenticated: '/login' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
 )
 

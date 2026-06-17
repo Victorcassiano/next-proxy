@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { join, resolve } from 'path'
 import { mkdtemp, rm, writeFile, mkdir, readFile, symlink, copyFile } from 'fs/promises'
 import { tmpdir } from 'os'
@@ -23,10 +23,11 @@ describe('CLI Integration Tests', () => {
 
   async function createMockProject(options: {
     nextVersion?: string
-    hasSrc?: boolean
+    hasSrcApp?: boolean
+    hasRootApp?: boolean
     configContent?: string
   } = {}) {
-    const { nextVersion = '^15.0.0', hasSrc = false, configContent } = options
+    const { nextVersion = '^15.0.0', hasSrcApp = false, hasRootApp = false, configContent } = options
 
     const pkg: any = {
       name: 'test-project',
@@ -42,8 +43,12 @@ describe('CLI Integration Tests', () => {
       JSON.stringify(pkg, null, 2)
     )
 
-    if (hasSrc) {
-      await mkdir(join(tempDir, 'src'), { recursive: true })
+    if (hasSrcApp) {
+      await mkdir(join(tempDir, 'src', 'app'), { recursive: true })
+    }
+
+    if (hasRootApp) {
+      await mkdir(join(tempDir, 'app'), { recursive: true })
     }
 
     if (configContent) {
@@ -73,8 +78,8 @@ describe('CLI Integration Tests', () => {
       expect(existsSync(join(tempDir, 'middleware.ts'))).toBe(true)
     })
 
-    it('should create files in src/ directory when it exists', async () => {
-      await createMockProject({ nextVersion: '^16.0.0', hasSrc: true })
+    it('should create files in src/ directory when src/app exists', async () => {
+      await createMockProject({ nextVersion: '^16.0.0', hasSrcApp: true })
 
       await init()
 
@@ -92,6 +97,15 @@ describe('CLI Integration Tests', () => {
       const content = await readFile(join(tempDir, 'proxy.config.ts'), 'utf-8')
       expect(content).toBe('existing')
     })
+
+    it('should create files at root when app/ exists at root (not in src/)', async () => {
+      await createMockProject({ nextVersion: '^16.0.0', hasRootApp: true, hasSrcApp: true })
+
+      await init()
+
+      expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(true)
+      expect(existsSync(join(tempDir, 'src', 'proxy.ts'))).toBe(false)
+    })
   })
 
   describe('build command', () => {
@@ -108,6 +122,7 @@ export default {
   },
   redirects: {
     unauthenticated: "/login",
+    authenticated: "/dashboard",
   },
   fallback: "/",
 };
@@ -143,12 +158,17 @@ export default {
       expect(content).toContain('export async function middleware')
     })
 
-    it('should fail silently if proxy.config.ts is missing', async () => {
+    it('should fail if proxy.config.ts is missing', async () => {
       await createMockProject({ nextVersion: '^16.0.0' })
+
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
 
       await build()
 
       expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+      expect(exitSpy).toHaveBeenCalledWith(1)
+
+      exitSpy.mockRestore()
     })
 
     it('should fail with invalid config (missing auth)', async () => {
@@ -163,9 +183,14 @@ export default {
         configContent: invalidConfig,
       })
 
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+
       await build()
 
       expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+      expect(exitSpy).toHaveBeenCalledWith(1)
+
+      exitSpy.mockRestore()
     })
 
     it('should fail with invalid config (missing routes)', async () => {
@@ -180,9 +205,14 @@ export default {
         configContent: invalidConfig,
       })
 
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+
       await build()
 
       expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+      expect(exitSpy).toHaveBeenCalledWith(1)
+
+      exitSpy.mockRestore()
     })
 
     it('should fail with invalid config (missing redirects)', async () => {
@@ -197,9 +227,14 @@ export default {
         configContent: invalidConfig,
       })
 
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+
       await build()
 
       expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+      expect(exitSpy).toHaveBeenCalledWith(1)
+
+      exitSpy.mockRestore()
     })
 
     it('should skip build if file already exists without --force', async () => {
@@ -255,6 +290,33 @@ export default {
       const content = await readFile(join(tempDir, 'proxy.ts'), 'utf-8')
       expect(content).toContain('/login')
       expect(content).toContain('NextResponse.redirect')
+    })
+
+    it('should generate proxy.ts in src/ when src/app/ exists', async () => {
+      await createMockProject({
+        nextVersion: '^16.0.0',
+        hasSrcApp: true,
+        configContent: validConfig,
+      })
+
+      await build({ force: true })
+
+      expect(existsSync(join(tempDir, 'src', 'proxy.ts'))).toBe(true)
+      expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+    })
+
+    it('should prefer root over src when both app/ and src/app/ exist', async () => {
+      await createMockProject({
+        nextVersion: '^16.0.0',
+        hasRootApp: true,
+        hasSrcApp: true,
+        configContent: validConfig,
+      })
+
+      await build({ force: true })
+
+      expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(true)
+      expect(existsSync(join(tempDir, 'src', 'proxy.ts'))).toBe(false)
     })
   })
 })

@@ -14,6 +14,7 @@ export type NextProxyConfig = {
   auth: AuthConfig;
   output?: {
     basePath?: string;
+    matcher?: string[];
   };
   fallback?: string;
 };

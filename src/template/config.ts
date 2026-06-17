@@ -13,6 +13,7 @@ export default defineNextProxyConfig({
   },
   redirects: {
     unauthenticated: "/login",
+    authenticated: "/dashboard",
   },
   fallback: "/",
 });

@@ -6,7 +6,7 @@ describe('generateRouteLogic', () => {
     const routes = [
       { path: '/dashboard', regex: '^\\/dashboard$', access: 'private' as const },
     ]
-    const redirects = { unauthenticated: '/login' }
+    const redirects = { unauthenticated: '/login', authenticated: '/dashboard' }
     const result = generateRouteLogic(routes, redirects)
 
     expect(result).toContain('route.access === "private"')
@@ -18,7 +18,7 @@ describe('generateRouteLogic', () => {
     const routes = [
       { path: '/', regex: '^\\/$', access: 'public' as const },
     ]
-    const redirects = { unauthenticated: '/login' }
+    const redirects = { unauthenticated: '/login', authenticated: '/dashboard' }
     const result = generateRouteLogic(routes, redirects)
 
     expect(result).toContain('access: "public"')
@@ -29,7 +29,7 @@ describe('generateRouteLogic', () => {
     const routes = [
       { path: '/', regex: '^\\/$', access: 'public' as const },
     ]
-    const redirects = { unauthenticated: '/login' }
+    const redirects = { unauthenticated: '/login', authenticated: '/dashboard' }
     const result = generateRouteLogic(routes, redirects, '/')
 
     expect(result).toContain('new URL("/", request.url)')
@@ -39,7 +39,7 @@ describe('generateRouteLogic', () => {
     const routes = [
       { path: '/', regex: '^\\/$', access: 'public' as const },
     ]
-    const redirects = { unauthenticated: '/login' }
+    const redirects = { unauthenticated: '/login', authenticated: '/dashboard' }
     const result = generateRouteLogic(routes, redirects)
 
     expect(result).toContain('NextResponse.next()')
@@ -50,7 +50,7 @@ describe('generateRouteLogic', () => {
       { path: '/dashboard', regex: '^\\/dashboard$', access: 'private' as const },
       { path: '/login', regex: '^\\/login$', access: 'public' as const },
     ]
-    const redirects = { unauthenticated: '/login' }
+    const redirects = { unauthenticated: '/login', authenticated: '/dashboard' }
     const result = generateRouteLogic(routes, redirects)
 
     expect(result).toContain('new RegExp("^\\\\/dashboard$")')
@@ -62,7 +62,7 @@ describe('generateRouteLogic', () => {
       { path: '/dashboard', regex: '^\\/dashboard$', access: 'private' as const },
       { path: '/admin', regex: '^\\/admin$', access: 'private' as const },
     ]
-    const redirects = { unauthenticated: '/login' }
+    const redirects = { unauthenticated: '/login', authenticated: '/dashboard' }
     const result = generateRouteLogic(routes, redirects)
 
     expect(result).toContain('/login')

@@ -6,7 +6,7 @@ describe('generateFileContent', () => {
     const config = {
       auth: { strategy: 'cookie' as const, key: 'auth_token' },
       routes: { '/': 'public' as const, '/dashboard': 'private' as const },
-      redirects: { unauthenticated: '/login' },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
       fallback: '/',
     }
     const result = generateFileContent(config, 'proxy.ts')
@@ -20,7 +20,7 @@ describe('generateFileContent', () => {
     const config = {
       auth: { strategy: 'cookie' as const, key: 'auth_token' },
       routes: { '/': 'public' as const },
-      redirects: { unauthenticated: '/login' },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
       fallback: '/',
     }
     const result = generateFileContent(config, 'middleware.ts')
@@ -32,7 +32,7 @@ describe('generateFileContent', () => {
     const config = {
       auth: { strategy: 'cookie' as const, key: 'my_custom_token' },
       routes: { '/': 'public' as const },
-      redirects: { unauthenticated: '/login' },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
       fallback: '/',
     }
     const result = generateFileContent(config, 'proxy.ts')
@@ -44,7 +44,7 @@ describe('generateFileContent', () => {
     const config = {
       auth: { strategy: 'cookie' as const, key: 'auth_token' },
       routes: { '/': 'public' as const },
-      redirects: { unauthenticated: '/login' },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
       fallback: '/',
     }
     const result = generateFileContent(config, 'proxy.ts')
@@ -60,7 +60,7 @@ describe('generateFileContent', () => {
         '/': 'public' as const,
         '/dashboard': 'private' as const,
       },
-      redirects: { unauthenticated: '/login' },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
       fallback: '/',
     }
     const result = generateFileContent(config, 'proxy.ts')
@@ -74,7 +74,7 @@ describe('generateFileContent', () => {
     const config = {
       auth: { strategy: 'cookie' as const, key: 'auth_token' },
       routes: { '/dashboard': 'private' as const },
-      redirects: { unauthenticated: '/login' },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
       fallback: '/',
     }
     const result = generateFileContent(config, 'proxy.ts')
