@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2026-06-17
+
+### Fixed
+- **CI/CD workflow**: Fixed branch name from `main` to `master` in GitHub Actions
+- **Test spies**: Fixed `process.exit` spy in integration tests (`vi.fn` → `vi.spyOn`)
+- **Integration tests**: Updated to use `hasSrcApp`/`hasRootApp` for accurate base path testing
+
+### Added
+- **Auto-publish on tags**: npm publish triggered on `v*` tags with provenance support
+
 ## [1.0.0] - 2026-06-17
 
 ### Added
