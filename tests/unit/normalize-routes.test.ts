@@ -60,4 +60,22 @@ describe('normalizeRoutes', () => {
     expect(publicRoute?.access).toBe('public')
     expect(privateRoute?.access).toBe('private')
   })
+
+  it('should normalize glob star pattern *', () => {
+    const routes = { '/admin/*': 'private' as const }
+    const result = normalizeRoutes(routes)
+    expect(result[0].regex).toBe('^\\/admin\\/[^\\/]+$')
+  })
+
+  it('should normalize globstar ** pattern', () => {
+    const routes = { '/docs/**': 'public' as const }
+    const result = normalizeRoutes(routes)
+    expect(result[0].regex).toBe('^\\/docs\\/.*$')
+  })
+
+  it('should normalize named param :id pattern', () => {
+    const routes = { '/users/:id': 'private' as const }
+    const result = normalizeRoutes(routes)
+    expect(result[0].regex).toBe('^\\/users\\/[^\\/]+$')
+  })
 })

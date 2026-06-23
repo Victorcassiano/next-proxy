@@ -332,4 +332,119 @@ export default {
     const result = await runTsc(tempDir)
     expect(result.failed).toBe(false)
   }, 120000)
+
+  it('should generate compilable proxy.ts with header strategy', async () => {
+    scaffoldMinimalProject(tempDir, '^16.0.0')
+
+    const configHeader = `
+export default {
+  auth: { strategy: "header", key: "x-user-token" },
+  routes: {
+    "/": "public",
+    "/dashboard": "private",
+  },
+  redirects: {
+    unauthenticated: "/login",
+    authenticated: "/dashboard",
+  },
+};
+`
+    writeFileSync(join(tempDir, 'proxy.config.ts'), configHeader)
+
+    await execa('bun', ['install'], { cwd: tempDir })
+    await build({ force: true })
+
+    const content = readFileSync(join(tempDir, 'proxy.ts'), 'utf-8')
+    expect(content).toContain('request.headers.get("x-user-token")')
+
+    const result = await runTsc(tempDir)
+    expect(result.failed).toBe(false)
+  }, 120000)
+
+  it('should generate compilable proxy.ts with jwt strategy', async () => {
+    scaffoldMinimalProject(tempDir, '^16.0.0')
+
+    const configJwt = `
+export default {
+  auth: { strategy: "jwt", key: "unused" },
+  routes: {
+    "/": "public",
+    "/dashboard": "private",
+  },
+  redirects: {
+    unauthenticated: "/login",
+    authenticated: "/dashboard",
+  },
+};
+`
+    writeFileSync(join(tempDir, 'proxy.config.ts'), configJwt)
+
+    await execa('bun', ['install'], { cwd: tempDir })
+    await build({ force: true })
+
+    const content = readFileSync(join(tempDir, 'proxy.ts'), 'utf-8')
+    expect(content).toContain('request.headers.get("Authorization")')
+    expect(content).toContain('startsWith("Bearer ")')
+
+    const result = await runTsc(tempDir)
+    expect(result.failed).toBe(false)
+  }, 120000)
+
+  it('should generate compilable proxy.ts with glob patterns', async () => {
+    scaffoldMinimalProject(tempDir, '^16.0.0')
+
+    const configGlob = `
+export default {
+  auth: { strategy: "cookie", key: "auth_token" },
+  routes: {
+    "/": "public",
+    "/admin/*": "private",
+    "/docs/**": "public",
+    "/users/:id": "private",
+  },
+  redirects: {
+    unauthenticated: "/login",
+    authenticated: "/dashboard",
+  },
+};
+`
+    writeFileSync(join(tempDir, 'proxy.config.ts'), configGlob)
+
+    await execa('bun', ['install'], { cwd: tempDir })
+    await build({ force: true })
+
+    const content = readFileSync(join(tempDir, 'proxy.ts'), 'utf-8')
+    expect(content).toContain('routeMatchers')
+    expect(content).toContain('admin')
+    expect(content).toContain('docs')
+    expect(content).toContain('users')
+
+    const result = await runTsc(tempDir)
+    expect(result.failed).toBe(false)
+  }, 120000)
+
+  it('should handle mixed Next.js params and glob patterns', async () => {
+    scaffoldMinimalProject(tempDir, '^16.0.0')
+
+    const configMixed = `
+export default {
+  auth: { strategy: "cookie", key: "auth_token" },
+  routes: {
+    "/api/:version/users/[id]": "private",
+    "/": "public",
+  },
+  redirects: {
+    unauthenticated: "/login",
+    authenticated: "/dashboard",
+  },
+};
+`
+    writeFileSync(join(tempDir, 'proxy.config.ts'), configMixed)
+
+    await execa('bun', ['install'], { cwd: tempDir })
+    await build({ force: true })
+
+    const result = await runTsc(tempDir)
+    expect(result.failed).toBe(false)
+  }, 120000)
 })

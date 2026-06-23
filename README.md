@@ -47,6 +47,11 @@ npx next-proxy init
 npx next-proxy build
 ```
 
+4. **Watch** for changes during development (optional):
+```bash
+npx next-proxy dev
+```
+
 ## Configuration
 
 ### auth (required)
@@ -54,8 +59,8 @@ npx next-proxy build
 Authentication configuration:
 ```typescript
 auth: {
-  strategy: "cookie",  // Authentication strategy
-  key: "auth_token",   // Cookie name to check for authentication
+  strategy: "cookie",  // Authentication strategy: "cookie" | "header" | "jwt"
+  key: "auth_token",   // Cookie name, header name, or placeholder for JWT
 }
 ```
 
@@ -72,6 +77,17 @@ routes: {
 - `"public"` - Accessible to everyone, no authentication required
 - `"public-only"` - Only for unauthenticated users. Redirects to `redirects.authenticated` if authenticated
 - `"private"` - Redirects to `redirects.unauthenticated` if cookie is not present
+
+Routes support **dynamic segments** and **glob patterns**:
+```typescript
+routes: {
+  "/": "public",
+  "/api/:version/users": "private",       // Named param (:param)
+  "/users/[id]": "private",               // Next.js bracket param
+  "/admin/*": "private",                  // Single-segment wildcard
+  "/docs/**": "public",                   // Multi-segment wildcard
+}
+```
 
 ### redirects (required)
 
@@ -127,6 +143,27 @@ export default defineNextProxyConfig({
 
 ---
 
+## Auth Strategies
+
+Three strategies are supported:
+
+- **`"cookie"`** (default) — checks `request.cookies.get(key)` for a truthy value
+- **`"header"`** — checks `request.headers.get(key)` for a truthy value
+- **`"jwt"`** — validates a JWT from the `Authorization: Bearer` header using the `jose` library
+
+```typescript
+// Cookie strategy (default)
+auth: { strategy: "cookie", key: "auth_token" }
+
+// Header strategy
+auth: { strategy: "header", key: "x-auth-token" }
+
+// JWT strategy (key is required but unused; always reads Authorization header)
+auth: { strategy: "jwt", key: "unused" }
+```
+
+---
+
 # next-proxy
 
 Um proxy de roteamento simples para Next.js.
@@ -176,6 +213,11 @@ npx next-proxy init
 npx next-proxy build
 ```
 
+4. **Watch** para alterações durante o desenvolvimento (opcional):
+```bash
+npx next-proxy dev
+```
+
 ## Configuração
 
 ### auth (obrigatório)
@@ -183,8 +225,8 @@ npx next-proxy build
 Configuração de autenticação:
 ```typescript
 auth: {
-  strategy: "cookie",  // Estratégia de autenticação
-  key: "auth_token",   // Nome do cookie para verificar autenticação
+  strategy: "cookie",  // Estratégia de autenticação: "cookie" | "header" | "jwt"
+  key: "auth_token",   // Nome do cookie, header ou placeholder para JWT
 }
 ```
 
@@ -202,6 +244,17 @@ routes: {
 - `"public"` - Acessível para todos, sem necessidade de autenticação
 - `"public-only"` - Apenas para não autenticados. Redireciona para `redirects.authenticated` se autenticado
 - `"private"` - Redireciona para `redirects.unauthenticated` se o cookie não estiver presente
+
+Rotas suportam **segmentos dinâmicos** e **glob patterns**:
+```typescript
+routes: {
+  "/": "public",
+  "/api/:version/users": "private",       // Parâmetro nomeado (:param)
+  "/users/[id]": "private",               // Bracket param do Next.js
+  "/admin/*": "private",                  // Wildcard de segmento único
+  "/docs/**": "public",                   // Wildcard multi-segmento
+}
+```
 
 ### redirects (obrigatório)
 
@@ -229,6 +282,25 @@ output: {
 }
 ```
 
+## Estratégias de Autenticação
+
+Três estratégias são suportadas:
+
+- **`"cookie"`** (padrão) — verifica `request.cookies.get(key)` por um valor truthy
+- **`"header"`** — verifica `request.headers.get(key)` por um valor truthy
+- **`"jwt"`** — valida um JWT do header `Authorization: Bearer` usando a biblioteca `jose`
+
+```typescript
+// Estratégia cookie (padrão)
+auth: { strategy: "cookie", key: "auth_token" }
+
+// Estratégia header
+auth: { strategy: "header", key: "x-auth-token" }
+
+// Estratégia JWT (key é obrigatório mas não usado; sempre lê Authorization header)
+auth: { strategy: "jwt", key: "unused" }
+```
+
 ## Exemplo Completo
 
 ```typescript
@@ -236,16 +308,15 @@ import { defineNextProxyConfig } from "@victorcassiano/next-proxy";
 
 export default defineNextProxyConfig({
   auth: {
-    strategy: "cookie",
+    strategy: "cookie",     // Também: "header" | "jwt"
     key: "auth_token",
   },
   routes: {
     "/": "public",
     "/login": "public-only",
-    "/register": "public",
     "/dashboard": "private",
-    "/admin": "private",
-    "/profile": "private",
+    "/admin/*": "private",  // Glob: corresponde a /admin/qualquer-coisa
+    "/docs/**": "public",   // Globstar: corresponde a /docs/a/b/c
   },
   redirects: {
     unauthenticated: "/login",

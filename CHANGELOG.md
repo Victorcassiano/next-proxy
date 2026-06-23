@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-06-23
+
+### Added
+- **Auth strategies**: Suporte a `cookie`, `header` e `jwt` como `auth.strategy`, com geração condicional de verificação de autenticação no middleware
+- **Glob patterns**: Suporte a `*` (segmento único), `**` (multi-segmento) e `:param` (parâmetro nomeado) em rotas, além do `[param]` existente
+- **Watch mode**: Novo comando `next-proxy dev` que observa alterações no `proxy.config.ts` e regenera automaticamente o middleware (usa `fs.watch` + debounce + cache bust ESM)
+- **Runtime config validation**: Módulo `validate-config.ts` compartilhado entre `validate` e `build`, com validação consistente de todos os campos
+- **Playground**: Exemplo completo em `examples/basic/` demonstrando glob patterns, estratégias de auth e os 3 tipos de acesso
+- **E2E tests**: 4 novos testes para header strategy, jwt strategy, glob patterns e mixed patterns (13 testes E2E)
+- **Integration tests**: 3 novos testes para header strategy, invalid path e invalid access type (20 testes de integração)
+- **Unit tests**: 26 novos testes para validação de config, shadow detection, glob patterns e estratégias de auth (64 testes unitários)
+- **README**: Documentação das 3 estratégias de auth, glob patterns e comando `dev`
+
+### Changed
+- **`validateConfig()`/`loadConfig()`**: Extraído para módulo compartilhado, usado por `build.ts` e `validate.ts`
+- **`detectShadowedRoutes`**: Corrigido para detectar rotas com `*` e `:` como dinâmicas (não apenas `[param]`)
+- **`pathToRegex`**: Placeholder ordering para evitar conflito entre `** → .*` e `* → [^/]+`
+- **Version bump**: `1.0.1` → `1.1.0`
+
 ## [1.0.1] - 2026-06-17
 
 ### Fixed

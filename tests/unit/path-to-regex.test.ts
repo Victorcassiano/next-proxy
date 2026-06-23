@@ -46,4 +46,48 @@ describe('pathToRegex', () => {
     expect(regex.test('/docs/a/b/c')).toBe(true)
     expect(regex.test('/docs')).toBe(false)
   })
+
+  it('should convert glob star * to single-segment regex', () => {
+    const result = pathToRegex('/admin/*')
+    expect(result).toBe('^\\/admin\\/[^\\/]+$')
+  })
+
+  it('should match glob star correctly', () => {
+    const regex = new RegExp(pathToRegex('/admin/*'))
+    expect(regex.test('/admin/users')).toBe(true)
+    expect(regex.test('/admin/users/list')).toBe(false)
+    expect(regex.test('/admin')).toBe(false)
+  })
+
+  it('should convert globstar ** to multi-segment regex', () => {
+    const result = pathToRegex('/docs/**')
+    expect(result).toBe('^\\/docs\\/.*$')
+  })
+
+  it('should match globstar correctly', () => {
+    const regex = new RegExp(pathToRegex('/docs/**'))
+    expect(regex.test('/docs/a')).toBe(true)
+    expect(regex.test('/docs/a/b/c')).toBe(true)
+    expect(regex.test('/docs/')).toBe(true)
+    expect(regex.test('/docs')).toBe(false)
+  })
+
+  it('should convert named param :param to regex', () => {
+    const result = pathToRegex('/users/:id')
+    expect(result).toBe('^\\/users\\/[^\\/]+$')
+  })
+
+  it('should match named param correctly', () => {
+    const regex = new RegExp(pathToRegex('/users/:id'))
+    expect(regex.test('/users/123')).toBe(true)
+    expect(regex.test('/users/abc')).toBe(true)
+    expect(regex.test('/users/123/posts')).toBe(false)
+  })
+
+  it('should handle mixed Next.js params and glob patterns', () => {
+    const regex = new RegExp(pathToRegex('/api/:version/users/[id]'))
+    expect(regex.test('/api/v2/users/42')).toBe(true)
+    expect(regex.test('/api/v2/users/abc')).toBe(true)
+    expect(regex.test('/api/v2')).toBe(false)
+  })
 })
