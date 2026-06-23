@@ -1,10 +1,28 @@
-import { expectType, expectError } from 'tsd'
+import { expectType, expectError, expectAssignable } from 'tsd'
 import { defineNextProxyConfig, NextProxyConfig, AuthConfig } from '../../src/index.js'
 
 // ✅ Valid minimal config
 expectType<NextProxyConfig>(
   defineNextProxyConfig({
     auth: { strategy: 'cookie', key: 'auth_token' },
+    routes: { '/': 'public' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
+  })
+)
+
+// ✅ Valid header strategy
+expectType<NextProxyConfig>(
+  defineNextProxyConfig({
+    auth: { strategy: 'header', key: 'x-auth-token' },
+    routes: { '/': 'public' },
+    redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
+  })
+)
+
+// ✅ Valid jwt strategy
+expectType<NextProxyConfig>(
+  defineNextProxyConfig({
+    auth: { strategy: 'jwt', key: 'token' },
     routes: { '/': 'public' },
     redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })
@@ -26,7 +44,7 @@ expectType<NextProxyConfig>(
 )
 
 // ✅ AuthConfig type
-expectType<AuthConfig>({
+expectAssignable<AuthConfig>({
   strategy: 'cookie',
   key: 'auth_token',
 })
@@ -67,7 +85,7 @@ expectError(
 // ❌ Invalid strategy
 expectError(
   defineNextProxyConfig({
-    auth: { strategy: 'jwt', key: 'token' },
+    auth: { strategy: 'oauth', key: 'token' },
     routes: { '/': 'public' },
     redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
   })

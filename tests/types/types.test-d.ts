@@ -1,5 +1,5 @@
 import { expectType, expectError, expectAssignable } from 'tsd'
-import { defineNextProxyConfig, NextProxyConfig, AuthConfig, RouteRule, AccessType } from '../../src/index.js'
+import { defineNextProxyConfig, NextProxyConfig, AuthConfig, AuthStrategy, RouteRule, AccessType } from '../../src/index.js'
 
 // ✅ AccessType accepts valid values
 expectAssignable<AccessType>('public')
@@ -40,10 +40,23 @@ expectAssignable<NextProxyConfig>({
 })
 
 // ✅ AuthConfig is correctly typed
-expectType<AuthConfig>({
+expectAssignable<AuthConfig>({
   strategy: 'cookie',
   key: 'auth_token',
 })
+
+// ✅ AuthStrategy accepts all valid strategies
+expectAssignable<AuthStrategy>('cookie')
+expectAssignable<AuthStrategy>('header')
+expectAssignable<AuthStrategy>('jwt')
+
+// ❌ AuthStrategy rejects invalid strategy
+expectError(
+  (() => {
+    const invalid: AuthStrategy = 'oauth'
+    return invalid
+  })()
+)
 
 // ✅ defineNextProxyConfig returns correct type
 expectType<NextProxyConfig>(

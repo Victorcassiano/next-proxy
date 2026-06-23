@@ -82,4 +82,27 @@ describe('generateFileContent', () => {
     expect(result).toContain('isAuthenticated')
     expect(result).toContain('request.cookies.get')
   })
+
+  it('should generate header-based auth check', () => {
+    const config = {
+      auth: { strategy: 'header' as const, key: 'x-auth-token' },
+      routes: { '/dashboard': 'private' as const },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
+    }
+    const result = generateFileContent(config, 'proxy.ts')
+
+    expect(result).toContain('request.headers.get("x-auth-token")')
+  })
+
+  it('should generate jwt auth check', () => {
+    const config = {
+      auth: { strategy: 'jwt' as const, key: '' },
+      routes: { '/dashboard': 'private' as const },
+      redirects: { unauthenticated: '/login', authenticated: '/dashboard' },
+    }
+    const result = generateFileContent(config, 'proxy.ts')
+
+    expect(result).toContain('request.headers.get("Authorization")')
+    expect(result).toContain('startsWith("Bearer ")')
+  })
 })

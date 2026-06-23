@@ -6,11 +6,11 @@ export function detectShadowedRoutes(
   const shadows: string[] = [];
 
   const dynamicRoutes = Object.entries(routes).filter(
-    ([path]) => /\[/.test(path)
+    ([path]) => /\[|\*|:/.test(path)
   );
 
   const staticRoutes = Object.entries(routes).filter(
-    ([path]) => !/\[/.test(path)
+    ([path]) => !/\[|\*|:/.test(path)
   );
 
   for (const [staticPath] of staticRoutes) {
