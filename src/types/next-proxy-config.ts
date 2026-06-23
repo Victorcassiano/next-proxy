@@ -1,7 +1,9 @@
 import type { RouteRule } from "./route-rule.js";
 
+export type AuthStrategy = "cookie" | "header" | "jwt";
+
 export type AuthConfig = {
-  strategy: "cookie";
+  strategy: AuthStrategy;
   key: string;
 };
 

@@ -1,8 +1,22 @@
 import type { NextProxyConfig } from "../types/next-proxy-config.js";
+import type { AuthStrategy } from "../types/next-proxy-config.js";
 import { normalizeRoutes } from "./normalize-routes.js";
 import { generateRouteLogic } from "./generate-route-logic.js";
 
 const DEFAULT_MATCHER = ["/((?!_next|fonts|examples|[\\\\w-]+\\\\.\\\\w+).*)"];
+
+function generateAuthCheck(strategy: AuthStrategy, key: string): string {
+  switch (strategy) {
+    case "cookie":
+      return `!!request.cookies.get("${key}")?.value`;
+    case "header":
+      return `!!request.headers.get("${key}")`;
+    case "jwt":
+      return `!!request.headers.get("Authorization")?.startsWith("Bearer ")`;
+    default:
+      return `!!request.cookies.get("${key}")?.value`;
+  }
+}
 
 export function generateFileContent(config: NextProxyConfig, fileName: string): string {
   const routes = normalizeRoutes(config.routes);
@@ -15,6 +29,8 @@ export function generateFileContent(config: NextProxyConfig, fileName: string): 
   const functionName = fileName.startsWith("proxy") ? "proxy" : "middleware";
   const matcher = config.output?.matcher ?? DEFAULT_MATCHER;
 
+  const authCheck = generateAuthCheck(config.auth.strategy, config.auth.key);
+
   return `
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
@@ -22,7 +38,7 @@ import { NextResponse } from "next/server";
 export async function ${functionName}(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isAuthenticated = !!request.cookies.get("${config.auth.key}")?.value;
+  const isAuthenticated = ${authCheck};
 
   ${routeLogic}
 }

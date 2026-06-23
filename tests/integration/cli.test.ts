@@ -318,5 +318,67 @@ export default {
       expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(true)
       expect(existsSync(join(tempDir, 'src', 'proxy.ts'))).toBe(false)
     })
+
+    it('should generate proxy.ts with header strategy', async () => {
+      await createMockProject({
+        nextVersion: '^16.0.0',
+        configContent: `
+export default {
+  auth: { strategy: "header", key: "x-user-token" },
+  routes: { "/": "public", "/dashboard": "private" },
+  redirects: { unauthenticated: "/login", authenticated: "/dashboard" },
+};
+`,
+      })
+
+      await build({ force: true })
+
+      const content = await readFile(join(tempDir, 'proxy.ts'), 'utf-8')
+      expect(content).toContain('request.headers.get("x-user-token")')
+    })
+
+    it('should fail build with route path not starting with /', async () => {
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+
+      await createMockProject({
+        nextVersion: '^16.0.0',
+        configContent: `
+export default {
+  auth: { strategy: "cookie", key: "token" },
+  routes: { "invalid-path": "public" },
+  redirects: { unauthenticated: "/login", authenticated: "/dashboard" },
+};
+`,
+      })
+
+      await build()
+
+      expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+      expect(exitSpy).toHaveBeenCalledWith(1)
+
+      exitSpy.mockRestore()
+    })
+
+    it('should fail build with invalid access type', async () => {
+      const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never)
+
+      await createMockProject({
+        nextVersion: '^16.0.0',
+        configContent: `
+export default {
+  auth: { strategy: "cookie", key: "token" },
+  routes: { "/": "forbidden" },
+  redirects: { unauthenticated: "/login", authenticated: "/dashboard" },
+};
+`,
+      })
+
+      await build()
+
+      expect(existsSync(join(tempDir, 'proxy.ts'))).toBe(false)
+      expect(exitSpy).toHaveBeenCalledWith(1)
+
+      exitSpy.mockRestore()
+    })
   })
 })
